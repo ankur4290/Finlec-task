@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8080/api',
+    baseURL: '/api',
     headers: {
         'Content-Type': 'application/json',
     },
@@ -9,15 +9,16 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
     (config) => {
-        const user = JSON.parse(localStorage.getItem('user'));
-        if (user && user.token) {
-            config.headers['Authorization'] = 'Bearer ' + user.token;
+        const isAuthRequest = config.url.includes('/auth/');
+        if (!isAuthRequest) {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user && user.token) {
+                config.headers['Authorization'] = 'Bearer ' + user.token;
+            }
         }
         return config;
     },
-    (error) => {
-        return Promise.reject(error);
-    }
+    (error) => Promise.reject(error)
 );
 
 export default instance;
