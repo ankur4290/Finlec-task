@@ -57,6 +57,8 @@ public class SecurityConfig {
     // Main security filter chain
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        // Enable CORS globally
+        http.cors(org.springframework.security.config.Customizer.withDefaults());
         // Disable CSRF because we are using tokens (copied from tutorial)
         http.csrf(csrf -> csrf.disable())
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
